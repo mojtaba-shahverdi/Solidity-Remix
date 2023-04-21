@@ -6,6 +6,8 @@ import "./PriceConverter.sol";
 // 794743
 // 775153
 
+error NotOwner();
+
 contract FundMe {
 
     using PriceConverter for uint256;
@@ -55,7 +57,18 @@ contract FundMe {
     }
 
     modifier onlyOwner {
-        require(msg.sender == i_owner, "Sender is not Owner");
+        // require(msg.sender == i_owner, "Sender is not Owner");
+        if(msg.sender != i_owner) {revert NotOwner();}
         _;
+    }
+
+    // what happens if someone sends this contract ETH without calling the fund function
+
+
+    receive() external payable {
+        fund();
+    }
+    fallback() external payable {
+        fund();
     }
 }
